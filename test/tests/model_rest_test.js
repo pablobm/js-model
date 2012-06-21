@@ -44,7 +44,7 @@ test("read() with a single instance", 2, function() {
   server.respond()
 })
 
-test("read() returning an HTML body and JSON in the headers", 2, function() {
+test("read() returning an HTML body and JSON in the headers", 3, function() {
   var Post = Model("post", function() {
     this.use(Model.REST, "/posts")
   })
@@ -55,9 +55,10 @@ test("read() returning an HTML body and JSON in the headers", 2, function() {
     "X-JSON-Resource": JSON.stringify({ id: 1, title: "Bar" })
   }, '<p>This is a post</p>'])
 
-  Post.persistence.read(function(models) {
+  Post.persistence.read(function(models, xhr, data) {
     equal(models.length, 1)
     deepEqual({ id: 1, title: "Bar" }, models[0].attributes)
+    equal(xhr.responseText, '<p>This is a post</p>')
   })
 
   server.respond()

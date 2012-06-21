@@ -77,7 +77,7 @@
           models.push(new klass(data[i]))
         }
 
-        callback(models)
+        callback(models, xhr, data)
       })
     },
 
