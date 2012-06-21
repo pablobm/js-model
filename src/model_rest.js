@@ -150,13 +150,21 @@
 
   Model.REST.parseResponseData = function(xhr) {
     try {
-      return /\S/.test(xhr.responseText) ?
-        jQuery.parseJSON(xhr.responseText) :
-        undefined;
+      if (/\bjson\b/.test(xhr.getResponseHeader('Content-Type'))) {
+        return Model.REST.parseJSON(xhr.responseText)
+      } else if (/\S/.test(xhr.getResponseHeader('X-JSON-Resource'))) {
+        return Model.REST.parseJSON(xhr.getResponseHeader('X-JSON-Resource'))
+      }
     } catch(e) {
       try {
         console.log(e)
       } catch(_) {}
     }
   };
+
+  Model.REST.parseJSON = function(str) {
+    return /\S/.test(str) ?
+      jQuery.parseJSON(str) :
+      undefined;
+  }
 })(Model);

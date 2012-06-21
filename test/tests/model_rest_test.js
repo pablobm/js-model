@@ -44,6 +44,25 @@ test("read() with a single instance", 2, function() {
   server.respond()
 })
 
+test("read() returning an HTML body and JSON in the headers", 2, function() {
+  var Post = Model("post", function() {
+    this.use(Model.REST, "/posts")
+  })
+
+  var server = this.sandbox.useFakeServer()
+  server.respondWith("GET", "/posts", [200, {
+    "Content-Type": "text/html",
+    "X-JSON-Resource": JSON.stringify({ id: 1, title: "Bar" })
+  }, '<p>This is a post</p>'])
+
+  Post.persistence.read(function(models) {
+    equal(models.length, 1)
+    deepEqual({ id: 1, title: "Bar" }, models[0].attributes)
+  })
+
+  server.respond()
+})
+
 test("create with named params in resource path", function() {
   var Post = Model("post", function() {
     this.use(Model.REST, "/root/:root_id/nested/:nested_id/posts")
@@ -241,7 +260,7 @@ test("create with AjaxSetup", function() {
       socket_id: '111'
     }
   })
-  
+
   var Post = Model("post", function() {
     this.use(Model.REST, "/posts")
   });
