@@ -1,5 +1,14 @@
 module("Model.ClassMethods");
 
+test("build", function() {
+  var Post = Model('post');
+  var post = Post.build({ title: "This is the title", body: "Blah, blah" })
+
+  equal(post.constructor._name, 'post')
+  equal(post.get('title'), "This is the title")
+  equal(post.get('body'), "Blah, blah")
+});
+
 test("find", function() {
   var Post = Model('post');
 

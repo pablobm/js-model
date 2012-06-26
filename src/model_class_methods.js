@@ -1,4 +1,8 @@
 Model.ClassMethods = {
+  build: function(attributes) {
+    return new this(attributes)
+  },
+
   find: function(id) {
     return this.collection.detect(function(model) {
       return model.id() == id
